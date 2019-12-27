@@ -1,0 +1,29 @@
+import socket
+from random import randint
+
+Letters = 'abcdefghijklmnopqrstuvwxyz'
+
+def word():
+    return_word = ''
+    for length in range(randint(0, 50)):
+        return_word += Letters[randint(0, len(Letters)-1)]
+    return return_word
+
+def sentence():
+    return_sentence=''
+    for length in range(randint(1,20)):
+        return_sentence+=word()+' '
+    return return_sentence.strip(' ')
+
+
+if __name__ == '__main__':
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client.connect(('localhost', 8080))
+
+    for count in range(10):
+        msg = sentence().encode('utf-8')
+        client.send(msg)
+        from_server = client.recv(4096)
+        print(from_server)
+
+    client.close()
