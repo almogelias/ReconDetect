@@ -5,13 +5,13 @@ Letters = 'abcdefghijklmnopqrstuvwxyz'
 
 def word():
     return_word = ''
-    for length in range(randint(0, 50)):
+    for length in range(randint(1, 15)):
         return_word += Letters[randint(0, len(Letters)-1)]
     return return_word
 
 def sentence():
     return_sentence=''
-    for length in range(randint(1,20)):
+    for length in range(randint(2,10)):
         return_sentence+=word()+' '
     return return_sentence.strip(' ')
 
