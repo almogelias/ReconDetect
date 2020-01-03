@@ -4,7 +4,7 @@ import sys
 from scapy import *
 
 
-target = '192.168.222.1'
+target = '192.168.222.2'
 startport = 1200
 endport = 1300
 print("Scannig " +target+" for open TCP ports\n")
