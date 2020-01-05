@@ -11,7 +11,7 @@ for port in PORTLIST:
     print('socket binded to port', port)
 
 serv.listen(5)
-print("socket is listening"))
+print("socket is listening")
 
 while True:
     conn, addr = serv.accept()
