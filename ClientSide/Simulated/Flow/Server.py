@@ -1,11 +1,17 @@
 import socket
 
-PORT = 8080
+PORTLIST = [445,3389,21,23]
+for port in PORTLIST:
+    ds = ("0.0.0.0", port)
 
-serv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    serv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    serv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    serv.bind(('0.0.0.0', port))
+    serv.listen(1)
+    print('socket binded to port', port)
 
-serv.bind(('0.0.0.0', PORT))
 serv.listen(5)
+print("socket is listening"))
 
 while True:
     conn, addr = serv.accept()
