@@ -8,14 +8,14 @@ from scapy.all import *
 import psutil
 from adapterInfo import Adapter
 from parsePacket import Parser
-#from PacketCounting import PacketCounting
-#from Flow import Flow
+from PacketCounting import PacketCounting
+from Flows import Flow
 from dbWrite import Database
 import os
 import datetime
 
 ### Global Variables ###
-filter = "tcp"
+filter = "tcp or udp"
 
 
 ### CallBack of Sniffer ###
@@ -23,10 +23,12 @@ def pkt_callback(pkt):
     # pkt.show() # debug statement - Full RawDATA
     # print(pkt.summary()) #debug Smaller RawDATA
     parser = Parser(pkt)
-    conn.insertData(parser.dataDict)
-    #packetsCount.addPacket(parser.dataDict)
-    #flows.addPacket(parser.dataDict)
+
+    #conn.insertData(parser.dataDict)
     parser.toStringPrint()
+    packetsCount.addPacket(parser.dataDict, conn)
+    flows.addPacket(parser.dataDict)
+
     createLogFile(writePath, fileNameWithTime, parser)
     ###Writing to file###
 
@@ -72,21 +74,24 @@ def get_networkAdapter():
 
 
 #### MAIN Func###
-#packetsCount = PacketCounting()
-#flows = Flow()
+packetsCount = PacketCounting()
+flows = Flow()
 fileName = 'logfile'
-writePath = 'C:\\Logs'
+writePath = 'C:\\temp'
 fileNameWithTime = createFolder(writePath)
+
+
 conn=Database()
 for onlineAdapter in get_networkAdapter():
     onlineAdapter.toString()
     print(onlineAdapter.ipNetworkWithPrefix())
     ### Calling Sniffer Driver (Scapy Lib)
     # sniff(iface=onlineAdapter.name, prn=pkt_callback, filter=filter +" "+"and src host {} and dst net {}".format(onlineAdapter.ip,onlineAdapter.ipNetworkWithPrefix()))
-    sniff(iface=onlineAdapter.name, prn=pkt_callback, timeout=50,
-              filter=filter + " " + "and src net {} and dst net {} and not host 192.168.222.254 and not dst host 192.168.222.255".format(
+    sniff(iface=onlineAdapter.name, prn=pkt_callback, timeout=30,
+              filter=filter + " " + "and src net {} and dst net {} and not dst host 192.168.222.255".format(
                   onlineAdapter.ipNetworkWithPrefix(), onlineAdapter.ipNetworkWithPrefix()))  # Sniff All !
     # sniff(iface=onlineAdapter.name, prn=pkt_callback, filter="tcp or icmp and src net {} and dst net {}".format(onlineAdapter.ipNetworkWithPrefix(),
     #        onlineAdapter.ipNetworkWithPrefix()), store=0, timeout=40)     #Capture filter TCP-Syn or ICMP and HostIP and dest=Network
-#    print(packetsCount.table)
-#    print (flows.flows)
+
+    print(packetsCount.table)
+    print (flows.flows)
