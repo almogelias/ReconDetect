@@ -10,14 +10,14 @@ class Flow:
 
     def addPacket(self, packet):
         dictFlowSummery = {'UnixStartTimeMillisec': packet['UnixTimeMillisec'],
-                           'UnixEndTimeMillisec': 0,##########################
+                           'UnixEndTimeMillisec': 0,
                             'Time': packet['Time'],
                            'Day': packet['Day'],
                            'srcIpAddr': packet['srcIpAddr'],
                            'dstIpAddr': packet['dstIpAddr'],
-                           'ipProtocol': packet['ipProtocol'],
-                           'dstPort': packet['dstPort'],
+                           'Service': packet['service'],
                            'srcPort': packet['srcPort'],
+                           'dstPort': packet['dstPort'],
                            'counterOfPackets': 0,
                            'counterOfSyn': 0,
                            'counterOfAck': 0,
@@ -38,6 +38,7 @@ class Flow:
                             AlreadyWasSynInFlow = 1
                             flow['counterOfPackets'] += 1
                             flow['counterOfSyn'] += 1
+                            flow['UnixEndTimeMillisec'] = packet['UnixTimeMillisec']
 
                     if(AlreadyWasSynInFlow==0):
                         dictFlowSummery['counterOfSyn'] += 1
@@ -55,7 +56,8 @@ class Flow:
                                     #####>>
                                     flow['counterOfFin'] = 1
                                     flow['counterOfPackets'] = flow['counterOfPackets'] + 1
-                                    dictFlowSummery['counterOfPackets', 'counterOfSyn', 'counterOfAck', 'counterOfPa'] = 0
+                                    flow['UnixEndTimeMillisec'] = packet['UnixTimeMillisec']
+                                    dictFlowSummery['UnixEndTimeMillisec','counterOfPackets', 'counterOfSyn', 'counterOfAck', 'counterOfPa'] = 0
                         else:
                             dictFlowSummery['counterOfFin'] += 1
                             dictFlowSummery['counterOfPackets'] += 1
@@ -70,7 +72,8 @@ class Flow:
                                     #####>>
                                     flow['counterOfAck'] = 1
                                     flow['counterOfPackets'] = flow['counterOfPackets'] + 1
-                                    dictFlowSummery['counterOfPackets', 'counterOfSyn', 'counterOfAck', 'counterOfPa'] = 0
+                                    flow['UnixEndTimeMillisec'] = packet['UnixTimeMillisec']
+                                    dictFlowSummery['UnixEndTimeMillisec','counterOfPackets', 'counterOfSyn', 'counterOfAck', 'counterOfPa'] = 0
                         else:
                             dictFlowSummery['counterOfAck'] += 1
                             dictFlowSummery['counterOfPackets'] += 1
@@ -85,15 +88,19 @@ class Flow:
                                 if (packet['Flags'] == 'PA'):
                                     flow['counterOfPa'] = flow['counterOfPa'] + 1
                                     flow['counterOfPackets'] = flow['counterOfPackets'] + 1
+                                    flow['UnixEndTimeMillisec'] = packet['UnixTimeMillisec']
                                 elif (packet['Flags'] == 'A'):
                                     flow['counterOfAck'] = flow['counterOfAck'] + 1
                                     flow['counterOfPackets'] = flow['counterOfPackets'] + 1
+                                    flow['UnixEndTimeMillisec'] = packet['UnixTimeMillisec']
                                 elif (packet['Flags'] == 'R'):
                                     flow['counterOfR'] += 1
                                     flow['counterOfPackets'] += 1
+                                    flow['UnixEndTimeMillisec'] = packet['UnixTimeMillisec']
                                 elif (packet['Flags'] == 'RA'):
                                     flow['counterOfRA'] += 1
                                     flow['counterOfPackets'] += 1
+                                    flow['UnixEndTimeMillisec'] = packet['UnixTimeMillisec']
         except:
             pass
 
