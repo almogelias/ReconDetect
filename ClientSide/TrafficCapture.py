@@ -15,7 +15,7 @@ import os
 import datetime
 
 ### Global Variables ###
-filter = "tcp or udp"
+filter = "tcp"
 
 
 ### CallBack of Sniffer ###
@@ -23,12 +23,9 @@ def pkt_callback(pkt):
     # pkt.show() # debug statement - Full RawDATA
     # print(pkt.summary()) #debug Smaller RawDATA
     parser = Parser(pkt)
-
-    #conn.insertData(parser.dataDict)
     parser.toStringPrint()
     packetsCount.addPacket(parser.dataDict, conn)
-    flows.addPacket(parser.dataDict)
-
+    #flows.addPacket(parser.dataDict)
     createLogFile(writePath, fileNameWithTime, parser)
     ###Writing to file###
 
@@ -49,7 +46,6 @@ def createFolder(writepath):
         os.mkdir(writepath)
     except OSError:
 
-        my_file = os.path.join(writepath, fileNameWithTime)
         print("The directory {} already exist".format(writepath))
     else:
         print("Successfully created the directory {} ".format(writepath))
@@ -62,8 +58,6 @@ def get_networkAdapter():
     stats = psutil.net_if_stats()
     available_networks = []
     for intface, addr_list in addresses.items():
-        # if ("local area network" in intface.lower() or "wireless network connection" in intface.lower() or "Local Area Connection" in intface): #Search for Local Area Network name or Wireless adapter.
-        # if ("local area network" in intface.lower() or "wireless network connection" in intface.lower() or "VMware Network Adapter VMnet8" in intface):  # Search for Local Area Network name or Wireless adapter.
         if intface in stats and getattr(stats[intface], "isup") and ('Loopback' not in intface):  # Get all the adapter which is up
             available_networks.append(
                 Adapter(intface, addr_list[1].address, addr_list[1].netmask))  # Write Adapter info from adapterInfo.py
@@ -86,12 +80,9 @@ for onlineAdapter in get_networkAdapter():
     onlineAdapter.toString()
     print(onlineAdapter.ipNetworkWithPrefix())
     ### Calling Sniffer Driver (Scapy Lib)
-    # sniff(iface=onlineAdapter.name, prn=pkt_callback, filter=filter +" "+"and src host {} and dst net {}".format(onlineAdapter.ip,onlineAdapter.ipNetworkWithPrefix()))
     sniff(iface=onlineAdapter.name, prn=pkt_callback, timeout=30,
-              filter=filter + " " + "and src net {} and dst net {} and not dst host 192.168.222.255".format(
+              filter=filter + " " + "and src net {} and dst net {} and not host 192.168.222.254 and not host 192.168.222.255".format(
                   onlineAdapter.ipNetworkWithPrefix(), onlineAdapter.ipNetworkWithPrefix()))  # Sniff All !
-    # sniff(iface=onlineAdapter.name, prn=pkt_callback, filter="tcp or icmp and src net {} and dst net {}".format(onlineAdapter.ipNetworkWithPrefix(),
-    #        onlineAdapter.ipNetworkWithPrefix()), store=0, timeout=40)     #Capture filter TCP-Syn or ICMP and HostIP and dest=Network
 
     print(packetsCount.table)
     print (flows.flows)
