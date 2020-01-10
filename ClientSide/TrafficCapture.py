@@ -25,7 +25,7 @@ def pkt_callback(pkt):
     parser = Parser(pkt)
     parser.toStringPrint()
     packetsCount.addPacket(parser.dataDict, conn)
-    #flows.addPacket(parser.dataDict)
+    flows.addPacket(parser.dataDict)
     createLogFile(writePath, fileNameWithTime, parser)
     ###Writing to file###
 
@@ -83,6 +83,6 @@ for onlineAdapter in get_networkAdapter():
     sniff(iface=onlineAdapter.name, prn=pkt_callback, timeout=30,
               filter=filter + " " + "and src net {} and dst net {} and not host 192.168.222.254 and not host 192.168.222.255".format(
                   onlineAdapter.ipNetworkWithPrefix(), onlineAdapter.ipNetworkWithPrefix()))  # Sniff All !
-
+    conn.insertFlows(flows.flows)
     print(packetsCount.table)
     print (flows.flows)
