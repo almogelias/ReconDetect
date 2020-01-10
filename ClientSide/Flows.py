@@ -1,5 +1,4 @@
-import json
-# from heapq import heapify, heappush, heappop
+
 from collections import deque
 
 
@@ -28,7 +27,7 @@ class Flow:
                            'counterOfFin': 0
                            }
         try:
-            if(packet['dstPort']!=1433 and packet['srcPort']!=1433):
+            if(packet['dstPort']!=445 and packet['srcPort']!=445):
 
                 if (packet['Flags'] == 'S' and packet['Ack'] == 0):
                     ####there are no flows - INIT
@@ -102,17 +101,3 @@ class Flow:
         for flow in self.flows:
             print(flow)
 
-
-'''
-                else:
-                    if(packet['Flags'] == 'A')
-                        dictFlowSummery['counterOfAck'] += 1
-
-                    dictFlowSummery['counterOfPa'] += 1
-
-                    dictFlowSummery['counterOfFin'] += 1
-                    dictFlowSummery['counterOfSyn'] += 1
-                    dictFlowSummery['counterOfPackets'] += 1
-                    self.flows.append(dictFlowSummery)
-
-'''
