@@ -1,7 +1,5 @@
-import json
+
 from collections import deque
-import tzlocal
-from datetime import datetime
 
 
 class PacketCounting:
@@ -33,19 +31,21 @@ class PacketCounting:
             if (self.table[0]["TimePeriod"] == packet["TimePeriod"] and self.table[0]["Day"] == packet["Day"]):
                 self.table[0]["endTimeUnixMillisec"] = packet["UnixTimeMillisec"]
                 self.table[0]["packetCount"] += 1
-                if (packet['Flags'] == 'S'):
-                    self.table[0]['counterOfSyn'] += 1
-                if (packet['Flags'] == 'A'):
-                    self.table[0]['counterOfAck'] += 1
-                if (packet['Flags'] == 'PA'):
-                    self.table[0]['counterOfPa'] += 1
-                if (packet['Flags'] == 'R'):
-                    self.table[0]['counterOfR'] += 1
-                if (packet['Flags'] == 'RA'):
-                    self.table[0]['counterOfRA'] += 1
-                if (packet['Flags'] == 'FA'):
-                    self.table[0]['counterOfFin'] += 1
-
+                try:
+                    if (packet['Flags'] == 'S'):
+                        self.table[0]['counterOfSyn'] += 1
+                    if (packet['Flags'] == 'A'):
+                        self.table[0]['counterOfAck'] += 1
+                    if (packet['Flags'] == 'PA'):
+                        self.table[0]['counterOfPa'] += 1
+                    if (packet['Flags'] == 'R'):
+                        self.table[0]['counterOfR'] += 1
+                    if (packet['Flags'] == 'RA'):
+                        self.table[0]['counterOfRA'] += 1
+                    if (packet['Flags'] == 'FA'):
+                        self.table[0]['counterOfFin'] += 1
+                except:
+                    pass
 
 
             else:
