@@ -1,8 +1,13 @@
 import pyodbc
 
+
+
 Driver = 'ODBC Driver 17 for SQL Server'
-Server = 'LabSRV'
+Server = 'DESKTOP-GRTRD9G'
 DB = 'FinalProject'
+
+
+
 
 
 def connectSQLServer(driver, server, db):
@@ -12,20 +17,26 @@ def connectSQLServer(driver, server, db):
                                                      r'DATABASE=' + db + ';'
                                                                          r'UID=sa;'
                                                                          r'PWD=Ll123456'
-
     )
     return connSQLServer
+
+
+
 
 
 class Database():
     def __init__(self):
         self.conn = connectSQLServer(Driver, Server, DB)
 
+
+
     def insertFlows(self, flows):
         curs = self.conn.cursor()
         for flow in flows:
             try:
-                query="""SELECT FlowID FROM [FinalProject].[dbo].[Flows] 
+                ### check if exist less than 120
+                query="""SELECT FlowID,UnixStartTimeMillisec,counterOfPackets,counterOfSyn,counterOfPa,counterOfR,counterOfRA,counterOfFin
+                            FROM [FinalProject].[dbo].[Flows] 
                             Where ((srcIpAddr = '{}' and dstIpAddr='{}'
                             and Service='{}' and srcPort='{}' and dstPort='{}')
                             or
@@ -34,41 +45,91 @@ class Database():
                             and
                             counterOfFin=0
                             and
-                            (({}-UnixEndTimeMillisec)/(1000))<120;""".format(
+                            (({}-UnixStartTimeMillisec)/(1000))<120;""".format(
+
                     flow["srcIpAddr"],
                     flow["dstIpAddr"],
                     flow["Service"],
                     flow["srcPort"],
                     flow["dstPort"],
-                    flow["srcIpAddr"],
+
                     flow["dstIpAddr"],
+                    flow["srcIpAddr"],
                     flow["Service"],
-                    flow["srcPort"],
                     flow["dstPort"],
+                    flow["srcPort"],
+
                     flow['UnixStartTimeMillisec']
                 )
-                results = curs.execute(query)
-                print (results)
-            except:
-                query = """INSERT INTO  dbo.Flows values({},{},{},'{}','{}','{}','{}',{},{},{},{},{},{},{},{})""".format(
-                    flow["UnixStartTimeMillisec"],
-                    flow["UnixEndTimeMillisec"],
-                    flow["Time"],
-                    flow["Day"],
-                    flow["srcIpAddr"],
-                    flow["dstIpAddr"],
-                    flow["Service"],
-                    flow["srcPort"],
-                    flow["dstPort"],
-                    flow["counterOfPackets"],
-                    flow["counterOfSyn"],
-                    flow["counterOfPa"],
-                    flow["counterOfR"],
-                    flow["counterOfRA"],
-                    flow["counterOfFin"]
-                )
+
                 curs.execute(query)
-                curs.commit()
+                result={}
+                for row in curs:
+                    result=row
+
+                if result:
+                    #### there is Flow in the DB ###
+                    newCounterOfPackets=flow['counterOfPackets']+row[2]
+                    newCounterOfSyn = flow['counterOfSyn']+row[3]
+                    newCounterOfPa = flow['counterOfPa'] + row[4]
+                    newCounterOfR = flow['counterOfR'] + row[5]
+                    newCounterOfRA = flow['counterOfRA'] + row[6]
+                    newCounterOfFin = flow['counterOfFin'] + row[7]
+
+                    query = """
+                    UPDATE
+                    [FinalProject].[dbo].[Flows] 
+                    SET
+                    UnixEndTimeMillisec = {},
+                    counterOfPackets = {},
+                    counterOfSyn = {},
+                    counterOfPa = {},
+                    counterOfR = {},
+                    counterOfRA = {},
+                    counterOfFin = {}
+                    WHERE
+                    FlowID={} and UnixStartTimeMillisec={}
+                    """.format(flow["UnixEndTimeMillisec"],
+                               newCounterOfPackets,
+                               newCounterOfSyn,
+                               newCounterOfPa,
+                               newCounterOfR,
+                               newCounterOfRA,
+                               newCounterOfFin,
+                               row[0],row[1]
+                               )
+
+                    curs.execute(query)
+                    curs.commit()
+
+
+                else:
+                    #### there is no flow in the DB
+                    query = """INSERT INTO  dbo.Flows values({},{},{},'{}','{}','{}','{}',{},{},{},{},{},{},{},{})""".format(
+                        flow["UnixStartTimeMillisec"],
+                        flow["UnixEndTimeMillisec"],
+                        flow["Time"],
+                        flow["Day"],
+                        flow["srcIpAddr"],
+                        flow["dstIpAddr"],
+                        flow["Service"],
+                        flow["srcPort"],
+                        flow["dstPort"],
+                        flow["counterOfPackets"],
+                        flow["counterOfSyn"],
+                        flow["counterOfPa"],
+                        flow["counterOfR"],
+                        flow["counterOfRA"],
+                        flow["counterOfFin"]
+                    )
+                    curs.execute(query)
+                    curs.commit()
+                    
+            except:
+                pass
+
+
+
 
     def insertCountsTenSecond(self, lastPacketCounting):
         curs = self.conn.cursor()
@@ -93,7 +154,10 @@ class Database():
             curs.execute(query)
             curs.commit()
 
+
+
         except:
+
             query = """INSERT INTO  dbo.packetsCountTenSecond values({},{},{},'{}',{},{},{},{},{},{},{})""".format(
                 lastPacketCounting["TimePeriod"],
                 lastPacketCounting["startTimeUnixMillisec"],
@@ -107,14 +171,19 @@ class Database():
                 lastPacketCounting["counterOfRA"],
                 lastPacketCounting["counterOfFin"]
             )
+
             curs.execute(query)
             curs.commit()
 
+
+
     def insertData(self, dataDict):
         curs = self.conn.cursor()
+
         try:
             self.insertCountsTenSecond(dataDict, curs)
-
+            
         except Exception as e:
+
             print(e)
             curs.rollback()
