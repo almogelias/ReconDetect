@@ -3,7 +3,7 @@ import pyodbc
 
 
 Driver = 'ODBC Driver 17 for SQL Server'
-Server = 'DESKTOP-GRTRD9G'
+Server = '###HOSTNAME###'
 DB = 'FinalProject'
 
 
