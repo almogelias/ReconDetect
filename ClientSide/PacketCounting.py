@@ -1,4 +1,3 @@
-
 from collections import deque
 
 
@@ -22,6 +21,7 @@ class PacketCounting:
             'counterOfR':0,
             'counterOfRA':0,
             'counterOfFin': 0,
+            'packetsTotalSize':0
         }
 
 
@@ -31,21 +31,20 @@ class PacketCounting:
             if (self.table[0]["TimePeriod"] == packet["TimePeriod"] and self.table[0]["Day"] == packet["Day"]):
                 self.table[0]["endTimeUnixMillisec"] = packet["UnixTimeMillisec"]
                 self.table[0]["packetCount"] += 1
-                try:
-                    if (packet['Flags'] == 'S'):
-                        self.table[0]['counterOfSyn'] += 1
-                    if (packet['Flags'] == 'A'):
-                        self.table[0]['counterOfAck'] += 1
-                    if (packet['Flags'] == 'PA'):
-                        self.table[0]['counterOfPa'] += 1
-                    if (packet['Flags'] == 'R'):
-                        self.table[0]['counterOfR'] += 1
-                    if (packet['Flags'] == 'RA'):
-                        self.table[0]['counterOfRA'] += 1
-                    if (packet['Flags'] == 'FA'):
-                        self.table[0]['counterOfFin'] += 1
-                except:
-                    pass
+                if (packet['Flags'] == 'S'):
+                    self.table[0]['counterOfSyn'] += 1
+                if (packet['Flags'] == 'A'):
+                    self.table[0]['counterOfAck'] += 1
+                if (packet['Flags'] == 'PA'):
+                    self.table[0]['counterOfPa'] += 1
+                if (packet['Flags'] == 'R'):
+                    self.table[0]['counterOfR'] += 1
+                if (packet['Flags'] == 'RA'):
+                    self.table[0]['counterOfRA'] += 1
+                if (packet['Flags'] == 'FA'):
+                    self.table[0]['counterOfFin'] += 1
+                self.table[0]["packetsTotalSize"]+=packet["IPLen"]
+
 
 
             else:
@@ -77,6 +76,7 @@ class PacketCounting:
                     packets['counterOfResetAck'] += 1
                 if (packet['Flags'] == 'FA'):
                     packets['counterOfFin'] += 1
+                packets["packetsTotalSize"]= packet["IPLen"]
                 self.table.appendleft(packets)
 
 
@@ -103,6 +103,7 @@ class PacketCounting:
                 packets['counterOfResetAck'] += 1
             if (packet['Flags'] == 'FA'):
                 packets['counterOfFin'] += 1
+            packets['packetsTotalSize'] = packet["IPLen"]
             self.table.appendleft(packets)
         return self.table
 
