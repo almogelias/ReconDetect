@@ -15,6 +15,8 @@ class Parser():
         self.pkt=pkt
         self.dataDict = self.parseData()
 
+    def timePeriodCalc(self,time):
+        return '{}'.format(time-time%10)
 ###Parsing Data - Main Method###
     def parseData(self): #Parse data with correct Protocol
         dataDict = {}
@@ -29,11 +31,12 @@ class Parser():
 
     def parseEthernet(self,dataDict):
         date = datetime.today()
-        date_int = date.strftime("%d%m%Y")
+        date_int=date.strftime("%d%m%Y")
         local_timezone = tzlocal.get_localzone()  # get pytz timezone
         local_time = datetime.fromtimestamp(self.pkt.time, local_timezone)
-        dataDict["UnixTimeMicrosec"] = int(self.pkt.time * 1000000)
+        dataDict["UnixTimeMillisec"] = int(self.pkt.time*1000)
         dataDict["Time"] = local_time.strftime('%H%M%S%f')
+        dataDict["TimePeriod"] = self.timePeriodCalc(int(local_time.strftime('%H%M%S')))
         dataDict["Date"] = date_int
         dataDict["Day"] = local_time.strftime("%A")
         dataDict["srcMac"] = self.pkt.src
@@ -123,14 +126,10 @@ class Parser():
         if(dataDict["PID"]!='None'):
             (fileName, filePath) = self.getFileNamePerPID(pid)
             deltaTime = self.getFileDeltaTime(filePath)
-            if (deltaTime != "None"):
+            if (fileName != "None" and deltaTime!="None"):
                 dataDict["fileName"] = fileName
                 dataDict["filePath"] = filePath
                 dataDict["deltaTimeMillisec"] = int(deltaTime*1000)
-            else:
-                dataDict["fileName"] = "None"
-                dataDict["filePath"] = "None"
-                dataDict["deltaTimeMillisec"] = "None"
         return dataDict
 
 
@@ -152,7 +151,7 @@ class Parser():
             if (fileName != "None"):
                 dataDict["fileName"] = fileName
                 dataDict["filePath"] = filePath
-                dataDict["deltaTime"] = int(deltaTime*1000)
+                dataDict["deltaTime"] = deltaTime
         return dataDict
 
     ### Get service for known port number
@@ -213,7 +212,7 @@ class Parser():
 ###Returning DataLOG###
 
     def toStringLog(self):
-        return(str(self.dataDict["UnixTimeMicrosec"]) + ',' + self.dataDict["srcMac"] + ',' + self.dataDict["dstMac"] +  # Ethernet
+        return(str(self.dataDict["unixTime"]) + ',' + self.dataDict["srcMac"] + ',' + self.dataDict["dstMac"] +  # Ethernet
               ',' + self.dataDict["srcIpAddr"] + ',' + self.dataDict["dstIpAddr"] +  # IP
               ',' + self.dataDict["protocol"] + ',' + str(self.dataDict["dstPort"]) + ',' + str(self.dataDict["tcpFlag"]))  # Protocol
 '''
@@ -224,7 +223,7 @@ class Parser():
 ###Printing Data####
 
     def toStringPrint(self):
-        print(str(self.dataDict["UnixTimeMicrosec"]) + ',   ' + self.dataDict["srcMac"] + ',    ' + self.dataDict["dstMac"]+ # Ethernet
+        print(str(self.dataDict["unixTime"]) + ',   ' + self.dataDict["srcMac"] + ',    ' + self.dataDict["dstMac"]+ # Ethernet
               ',    ' + self.dataDict["srcIpAddr"] +',  ' + self.dataDict["dstIpAddr"]+                              # IP
               ',   '+ self.dataDict["protocol"]+',  '+str(self.dataDict["dstPort"])+',  '+str(self.dataDict["tcpFlag"]))                                      #Protocol
 
