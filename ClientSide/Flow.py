@@ -48,6 +48,7 @@ class Flow:
                            'UnixEndTimeMillisec': 0,
                            'Time': packet['Time'],
                            'Day': packet['Day'],
+                           'TimePeriod' : packet['TimePeriod'],
                            'srcIpAddr': packet['srcIpAddr'],
                            'dstIpAddr': packet['dstIpAddr'],
                            'Service': packet['service'],
