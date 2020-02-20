@@ -1,0 +1,238 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="FinalProjectEntities3.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Flows">
+          <Key>
+            <PropertyRef Name="FlowID" />
+            <PropertyRef Name="TimePeriod" />
+          </Key>
+          <Property Name="FlowID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UnixStartTimeMillisec" Type="bigint" Nullable="false" />
+          <Property Name="UnixEndTimeMillisec" Type="bigint" Nullable="false" />
+          <Property Name="Time" Type="bigint" Nullable="false" />
+          <Property Name="Day" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="TimePeriod" Type="int" Nullable="false" />
+          <Property Name="srcIpAddr" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="dstIpAddr" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Service" Type="varchar" MaxLength="50" />
+          <Property Name="srcPort" Type="int" Nullable="false" />
+          <Property Name="dstPort" Type="int" Nullable="false" />
+          <Property Name="counterOfPackets" Type="int" Nullable="false" />
+          <Property Name="counterOfSyn" Type="int" Nullable="false" />
+          <Property Name="counterOfPa" Type="int" Nullable="false" />
+          <Property Name="counterOfR" Type="int" Nullable="false" />
+          <Property Name="counterOfRA" Type="int" Nullable="false" />
+          <Property Name="counterOfFin" Type="int" Nullable="false" />
+          <Property Name="packetsTotalSize" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="packetsCountTenSecond">
+          <Key>
+            <PropertyRef Name="PacketCountTenID" />
+            <PropertyRef Name="TimePeriod" />
+          </Key>
+          <Property Name="PacketCountTenID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TimePeriod" Type="int" Nullable="false" />
+          <Property Name="startTimeUnixMillisec" Type="bigint" Nullable="false" />
+          <Property Name="endTimeUnixMillisec" Type="bigint" Nullable="false" />
+          <Property Name="Day" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="packetCount" Type="int" Nullable="false" />
+          <Property Name="counterOfSyn" Type="int" Nullable="false" />
+          <Property Name="counterOfAck" Type="int" Nullable="false" />
+          <Property Name="counterOfPa" Type="int" Nullable="false" />
+          <Property Name="counterOfR" Type="int" Nullable="false" />
+          <Property Name="counterOfRA" Type="int" Nullable="false" />
+          <Property Name="counterOfFin" Type="int" Nullable="false" />
+          <Property Name="packetsTotalSize" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'FinalProject.dbo.AVGpacketsCountTenSecond' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AVGpacketsCountTenSecond">
+          <Key>
+            <PropertyRef Name="TimePeriod" />
+          </Key>
+          <Property Name="TimePeriod" Type="int" Nullable="false" />
+          <Property Name="packetCount" Type="int" />
+          <Property Name="counterOfSyn" Type="int" />
+          <Property Name="counterOfAck" Type="int" />
+          <Property Name="counterOfPa" Type="int" />
+          <Property Name="counterOfR" Type="int" />
+          <Property Name="counterOfRA" Type="int" />
+          <Property Name="counterOfFin" Type="int" />
+          <Property Name="packetsTotalSize" Type="int" />
+        </EntityType>
+        <EntityContainer Name="FinalProjectEntities3StoreContainer">
+          <EntitySet Name="Flows" EntityType="Self.Flows" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="packetsCountTenSecond" EntityType="Self.packetsCountTenSecond" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AVGpacketsCountTenSecond" EntityType="Self.AVGpacketsCountTenSecond" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [AVGpacketsCountTenSecond].[TimePeriod] AS [TimePeriod], 
+    [AVGpacketsCountTenSecond].[packetCount] AS [packetCount], 
+    [AVGpacketsCountTenSecond].[counterOfSyn] AS [counterOfSyn], 
+    [AVGpacketsCountTenSecond].[counterOfAck] AS [counterOfAck], 
+    [AVGpacketsCountTenSecond].[counterOfPa] AS [counterOfPa], 
+    [AVGpacketsCountTenSecond].[counterOfR] AS [counterOfR], 
+    [AVGpacketsCountTenSecond].[counterOfRA] AS [counterOfRA], 
+    [AVGpacketsCountTenSecond].[counterOfFin] AS [counterOfFin], 
+    [AVGpacketsCountTenSecond].[packetsTotalSize] AS [packetsTotalSize]
+    FROM [dbo].[AVGpacketsCountTenSecond] AS [AVGpacketsCountTenSecond]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="FinalProjectEntities3" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Flow">
+          <Key>
+            <PropertyRef Name="FlowID" />
+            <PropertyRef Name="TimePeriod" />
+          </Key>
+          <Property Name="FlowID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UnixStartTimeMillisec" Type="Int64" Nullable="false" />
+          <Property Name="UnixEndTimeMillisec" Type="Int64" Nullable="false" />
+          <Property Name="Time" Type="Int64" Nullable="false" />
+          <Property Name="Day" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="TimePeriod" Type="Int32" Nullable="false" />
+          <Property Name="srcIpAddr" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="dstIpAddr" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Service" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="srcPort" Type="Int32" Nullable="false" />
+          <Property Name="dstPort" Type="Int32" Nullable="false" />
+          <Property Name="counterOfPackets" Type="Int32" Nullable="false" />
+          <Property Name="counterOfSyn" Type="Int32" Nullable="false" />
+          <Property Name="counterOfPa" Type="Int32" Nullable="false" />
+          <Property Name="counterOfR" Type="Int32" Nullable="false" />
+          <Property Name="counterOfRA" Type="Int32" Nullable="false" />
+          <Property Name="counterOfFin" Type="Int32" Nullable="false" />
+          <Property Name="packetsTotalSize" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="packetsCountTenSecond">
+          <Key>
+            <PropertyRef Name="PacketCountTenID" />
+            <PropertyRef Name="TimePeriod" />
+          </Key>
+          <Property Name="PacketCountTenID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TimePeriod" Type="Int32" Nullable="false" />
+          <Property Name="startTimeUnixMillisec" Type="Int64" Nullable="false" />
+          <Property Name="endTimeUnixMillisec" Type="Int64" Nullable="false" />
+          <Property Name="Day" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="packetCount" Type="Int32" Nullable="false" />
+          <Property Name="counterOfSyn" Type="Int32" Nullable="false" />
+          <Property Name="counterOfAck" Type="Int32" Nullable="false" />
+          <Property Name="counterOfPa" Type="Int32" Nullable="false" />
+          <Property Name="counterOfR" Type="Int32" Nullable="false" />
+          <Property Name="counterOfRA" Type="Int32" Nullable="false" />
+          <Property Name="counterOfFin" Type="Int32" Nullable="false" />
+          <Property Name="packetsTotalSize" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AVGpacketsCountTenSecond">
+          <Key>
+            <PropertyRef Name="TimePeriod" />
+          </Key>
+          <Property Name="TimePeriod" Type="Int32" Nullable="false" />
+          <Property Name="packetCount" Type="Int32" />
+          <Property Name="counterOfSyn" Type="Int32" />
+          <Property Name="counterOfAck" Type="Int32" />
+          <Property Name="counterOfPa" Type="Int32" />
+          <Property Name="counterOfR" Type="Int32" />
+          <Property Name="counterOfRA" Type="Int32" />
+          <Property Name="counterOfFin" Type="Int32" />
+          <Property Name="packetsTotalSize" Type="Int32" />
+        </EntityType>
+        <EntityContainer Name="FinalProjectEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Flows" EntityType="Self.Flow" />
+          <EntitySet Name="packetsCountTenSeconds" EntityType="Self.packetsCountTenSecond" />
+          <EntitySet Name="AVGpacketsCountTenSeconds" EntityType="Self.AVGpacketsCountTenSecond" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="FinalProjectEntities3StoreContainer" CdmEntityContainer="FinalProjectEntities">
+          <EntitySetMapping Name="Flows">
+            <EntityTypeMapping TypeName="FinalProjectEntities3.Flow">
+              <MappingFragment StoreEntitySet="Flows">
+                <ScalarProperty Name="FlowID" ColumnName="FlowID" />
+                <ScalarProperty Name="UnixStartTimeMillisec" ColumnName="UnixStartTimeMillisec" />
+                <ScalarProperty Name="UnixEndTimeMillisec" ColumnName="UnixEndTimeMillisec" />
+                <ScalarProperty Name="Time" ColumnName="Time" />
+                <ScalarProperty Name="Day" ColumnName="Day" />
+                <ScalarProperty Name="TimePeriod" ColumnName="TimePeriod" />
+                <ScalarProperty Name="srcIpAddr" ColumnName="srcIpAddr" />
+                <ScalarProperty Name="dstIpAddr" ColumnName="dstIpAddr" />
+                <ScalarProperty Name="Service" ColumnName="Service" />
+                <ScalarProperty Name="srcPort" ColumnName="srcPort" />
+                <ScalarProperty Name="dstPort" ColumnName="dstPort" />
+                <ScalarProperty Name="counterOfPackets" ColumnName="counterOfPackets" />
+                <ScalarProperty Name="counterOfSyn" ColumnName="counterOfSyn" />
+                <ScalarProperty Name="counterOfPa" ColumnName="counterOfPa" />
+                <ScalarProperty Name="counterOfR" ColumnName="counterOfR" />
+                <ScalarProperty Name="counterOfRA" ColumnName="counterOfRA" />
+                <ScalarProperty Name="counterOfFin" ColumnName="counterOfFin" />
+                <ScalarProperty Name="packetsTotalSize" ColumnName="packetsTotalSize" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="packetsCountTenSeconds">
+            <EntityTypeMapping TypeName="FinalProjectEntities3.packetsCountTenSecond">
+              <MappingFragment StoreEntitySet="packetsCountTenSecond">
+                <ScalarProperty Name="PacketCountTenID" ColumnName="PacketCountTenID" />
+                <ScalarProperty Name="TimePeriod" ColumnName="TimePeriod" />
+                <ScalarProperty Name="startTimeUnixMillisec" ColumnName="startTimeUnixMillisec" />
+                <ScalarProperty Name="endTimeUnixMillisec" ColumnName="endTimeUnixMillisec" />
+                <ScalarProperty Name="Day" ColumnName="Day" />
+                <ScalarProperty Name="packetCount" ColumnName="packetCount" />
+                <ScalarProperty Name="counterOfSyn" ColumnName="counterOfSyn" />
+                <ScalarProperty Name="counterOfAck" ColumnName="counterOfAck" />
+                <ScalarProperty Name="counterOfPa" ColumnName="counterOfPa" />
+                <ScalarProperty Name="counterOfR" ColumnName="counterOfR" />
+                <ScalarProperty Name="counterOfRA" ColumnName="counterOfRA" />
+                <ScalarProperty Name="counterOfFin" ColumnName="counterOfFin" />
+                <ScalarProperty Name="packetsTotalSize" ColumnName="packetsTotalSize" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AVGpacketsCountTenSeconds">
+            <EntityTypeMapping TypeName="FinalProjectEntities3.AVGpacketsCountTenSecond">
+              <MappingFragment StoreEntitySet="AVGpacketsCountTenSecond">
+                <ScalarProperty Name="TimePeriod" ColumnName="TimePeriod" />
+                <ScalarProperty Name="packetCount" ColumnName="packetCount" />
+                <ScalarProperty Name="counterOfSyn" ColumnName="counterOfSyn" />
+                <ScalarProperty Name="counterOfAck" ColumnName="counterOfAck" />
+                <ScalarProperty Name="counterOfPa" ColumnName="counterOfPa" />
+                <ScalarProperty Name="counterOfR" ColumnName="counterOfR" />
+                <ScalarProperty Name="counterOfRA" ColumnName="counterOfRA" />
+                <ScalarProperty Name="counterOfFin" ColumnName="counterOfFin" />
+                <ScalarProperty Name="packetsTotalSize" ColumnName="packetsTotalSize" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
