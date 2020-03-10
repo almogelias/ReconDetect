@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewBag.Title = "Home Page";
 }
 
@@ -17,7 +17,8 @@
             var yValuePackets = 10;
             var xValueFlows = 0;
             var yValueFlows = 10;
-
+            var packetLength = 0;
+            var flowLength = 0;
             var newDataCount = 5;
             dataPointsPackets = [];
             dataPointsFlows = [];
@@ -47,6 +48,7 @@
                 },
                 data: [{
                     type: "column",
+                    color: "#7B68EE",
                     yValueFormatString: "#,##0.## Flows",
                     dataPoints: dataPointsFlows
                 }]
@@ -59,14 +61,22 @@
 
                 if (newDataCount !== 1) {
 
-                    $.each(data[1], function (key, value) {
-                        dataPointsPackets.push({ x: value.x, y: parseFloat(value.y) });
+                    $.each(data[1], function (key, value, anomaly = value['Anomaly']) {
+                        if (anomaly == '1') {
+                            dataPointsPackets.push({ x: value.x, y: parseFloat(value.y), 'markerColor': "red", 'markerType': "circle" });
+                        }
+                        else {
+                            dataPointsPackets.push({ x: value.x, y: parseFloat(value.y)});
+                        }
                         xValuePackets++;
                         yValuePackets = parseFloat(value.y);
                     });
 
-                    $.each(data[2], function (key, value) {
-                        dataPointsFlows.push({ x: value.x, y: parseFloat(value.y) });
+                    $.each(data[2], function (key, value, anomaly = value['Anomaly']) {
+                        if (anomaly == '1') {
+                            dataPointsFlows.push({ x: value.x, y: parseFloat(value.y),'color':"red"});
+                        }
+                        dataPointsFlows.push({ x: value.x, y: parseFloat(value.y)});
                         xValueFlows++;
                         yValueFlows = parseFloat(value.y);
                     });
@@ -79,6 +89,7 @@
                         dataPointsPackets.shift();
                     }
                     //console.log(data[1][data[1].length - 1]);
+                    if (dataPointsPackets.length != 0) {
                     dataPointsPackets.push({ x: data[1][data[1].length - 1].x, y: parseFloat(data[1][data[1].length - 1].y) });
                     xValuePackets++;
                     yValuePackets = parseFloat(data[1][data[1].length - 1].y);
@@ -86,13 +97,18 @@
                     if (dataPointsFlows.length > 25) {
                         dataPointsFlows.shift();
                     }
-                    dataPointsFlows.push({ x: data[2][data[2].length - 1].x, y: parseFloat(data[2][data[2].length - 1].y) });
+                    dataPointsFlows.push({ x: data[2][0].x, y: parseFloat(data[2][0].y) });
                     xValueFlows++;
                     yValueFlows = parseFloat(data[2][data[2].length - 1].y);
+                    }
                 }
 
                 chart1.render();
-                chart2.render();
+
+                if (data[2].length > flowLength) {
+                    chart2.render();
+                    flowLength = data[2].length;
+                }
                 setTimeout(updateDataCharts, 5000);
             }
 
@@ -121,28 +137,71 @@
                             ) {
                                 e.options.data.forEach(function (link) {
                                     for (var i = 0; i < entities.length; i++) {
-
-                                        if (link[0] == entities[i][0]) {
-                                            //lastNode = entities[i][0];
-                                            nodes[entities[i][0]] = {
+                                        
+//                                        if (link[0] == entities[i][0] && entities[i][0].includes(".", 4)) {
+                                        if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(entities[i][0])) {
+                                            
+                                                nodes[entities[i][0]] = {
                                                 id: entities[i][0],
                                                 marker: {
                                                     radius: 25
-                                                }
-                                            };
-                                            nodes[link[1]] = {
-                                                id: link[1],
+                                                },
+                                                color: colors[green]
+                                                };
+                                            
+                                        }
+
+                                        else if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(entities[i][1])) {
+                                                nodes[entities[i][1]] = {
+                                                id: entities[i][1],
+                                                marker: {
+                                                    radius: 25
+                                                },
+                                                color: colors[green]
+                                                };
+                                        }
+
+                                        else if (entities[i][1].includes(".")) {
+                                                nodes[entities[i][1]] = {
+                                                id: entities[i][1],
                                                 marker: {
                                                     radius: 12
                                                 },
-                                                color: colors[green]
-                                            };
-                                            console.log(nodes[link[1]]);
-                                        } else if (nodes[link[0]] && nodes[link[0]].color) {
-                                            nodes[link[1]] = {
-                                                id: link[1],
-                                                color: nodes[link[0]].color
-                                            };
+                                                color: colors[orange]
+                                                };
+                                        }
+
+                                        else if (entities[i][0].includes(".")) {
+                                            
+                                                nodes[entities[i][0]] = {
+                                                id: entities[i][0],
+                                                marker: {
+                                                    radius: 12
+                                                },
+                                                color: colors[orange]
+                                                };  
+                                        }
+
+                                        if (entities[i][2] == 1) {
+                                            if (!((/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(entities[i][0])) ||
+                                                (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(entities[i][1]))))
+                                                    {
+                                                    nodes[entities[i][0]] = {
+                                                    id: entities[i][0],
+                                                    marker: {
+                                                    radius: 12
+                                                    },
+                                                    color: colors[red]
+                                                    };
+
+                                                    nodes[entities[i][1]] = {
+                                                    id: entities[i][1],
+                                                    marker: {
+                                                    radius: 5
+                                                    },
+                                                    color: colors[red]
+                                                    };    
+                                                    }
                                         }
 
                                     }
@@ -198,7 +257,8 @@
 
 
             function updateDataCharts() {
-                $.getJSON("/home/jsonHome?xstart=" + xValuePackets + "&ystart=" + yValuePackets + xValueFlows + "&ystart=" + yValueFlows + "&length=" + newDataCount, addData);
+                //$.getJSON("/home/jsonHome?xstart=" + xValuePackets + "&ystart=" + yValuePackets + xValueFlows + "&ystart=" + yValueFlows + "&length=" + newDataCount, addData);
+                $.getJSON("/home/jsonHome", addData);
             }
 
             function updateDataEntityGraph() {
@@ -211,10 +271,10 @@
 </head>
 <body>
     <br />
-    <figure class="highcharts-figure">
+    <figure class="highcharts-figure" >
         <div id="container"></div>
         <p class="highcharts-description">
-            This graph shows the network entities, where the nodes represent the hosts
+            This graph shows the network entities, where the nodes represent the hosts 
             and the TCP protocols are the relation between them.
             The nodes can be dragged around and will be repositioned dynamically.
             Network graphs are typically used to show relations in data. In this
@@ -223,7 +283,7 @@
     </figure>
     <br />
     <div id="chartContainer1" style="height: 370px; width: 100%;"></div>
-    </br>
+    <br/>
     <div id="chartContainer2" style="height: 370px; width: 100%;"></div>
     <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
     <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
