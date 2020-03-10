@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.Serialization;
 
 namespace ASPNET_MVC_ChartsModel
@@ -7,10 +7,11 @@ namespace ASPNET_MVC_ChartsModel
     [DataContract]
     public class DataPoint
     {
-        public DataPoint(double x, double y)
+        public DataPoint(double x, double y , string anomaly)
         {
             this.X = x;
             this.Y = y;
+            this.Anomaly = anomaly;
         }
 
         //Explicitly setting the name to be used while serializing to JSON.
@@ -20,21 +21,26 @@ namespace ASPNET_MVC_ChartsModel
         //Explicitly setting the name to be used while serializing to JSON.
         [DataMember(Name = "y")]
         public Nullable<double> Y = null;
+
+        //Explicitly setting the name to be used while serializing to JSON.
+        [DataMember(Name = "Anomaly")]
+        public String Anomaly = null;
     }
 
     public class DataPoints
     {
-        public DataPoints(int time, int cSyn, int cPa, int cR, int totalSize)
+        public DataPoints(int time, int cSyn, int cPa, int cR, int totalSize, String anomalyField)
         {
             this.time = time;
             this.cSyn = cSyn;
             this.cPa = cPa;
             this.cR = cR;
             this.totalSize = totalSize;
+            this.anomalyField = anomalyField;
         }
 
 
-        public DataPoints(int time, String service, int cSyn, int cPa, int cR, int totalSize)
+        public DataPoints(int time, String service, int cSyn, int cPa, int cR, int totalSize, String anomalyField)
         {
             this.time = time;
             this.service = service;
@@ -42,6 +48,7 @@ namespace ASPNET_MVC_ChartsModel
             this.cPa = cPa;
             this.cR = cR;
             this.totalSize = totalSize;
+            this.anomalyField = anomalyField;
         }
 
         //Explicitly setting the name to be used while serializing to JSON.
@@ -62,6 +69,9 @@ namespace ASPNET_MVC_ChartsModel
         //Explicitly setting the name to be used while serializing to JSON.
         [DataMember(Name = "TotalSize")]
         public Nullable<int> totalSize = null;
+        //Explicitly setting the name to be used while serializing to JSON.
+        [DataMember(Name = "AnomalyField")]
+        public String anomalyField = null;
     }
 
 }
