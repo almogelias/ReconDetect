@@ -1,236 +1,485 @@
-﻿@{
+@{
+
     ViewBag.Title = "Extension";
+
 }
 
 
 
+
+
+
+
 <script src="https://code.highcharts.com/highcharts.js"></script>
+
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
+
 <script src="https://code.highcharts.com/modules/export-data.js"></script>
+
 <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 
 
 
 
+
+
+
+
+
 <figure class="highcharts-figure">
+
     <div id="container1"></div>
+
     <div id="container2"></div>
+
     <p class="highcharts-description">
-        This chart shows how data labels can be added to the data series. This
-        can increase readability and comprehension for small datasets.
     </p>
+
 </figure>
+
+
+
 
 
 <figure class="highcharts-figure">
+
     <div id="container3"></div>
+
     <div id="container4"></div>
+
     <p class="highcharts-description">
-        This chart shows how data labels can be added to the data series. This
-        can increase readability and comprehension for small datasets.
     </p>
+
 </figure>
+
+
+
+
 
 
 
 <script>
+
     $(document).ready(function () {
+
         $.getJSON("/Home/JsonExtention", function (data) {
+
             var timesPackets = [];
+
             var cSynPackets = [];
+
             var cPaPackets = [];
+
             var cRPackets = [];
+
             var totalSizePackets = [];
 
+            var anomalyPackets = [];
+
             var timesFlows = [];
+
             var service = [];
+
+            var dstPort = [];
+
             var cSynFlows = [];
+
             var cPaFlows = [];
+
             var cRFlows = [];
+
             var totalSizeFlows = [];
 
+            var anomalyFlows = [];
+
             for (var i = 0; i < data["packetsCountTenSeconds"].length; i++) {
+
+                if (data["packetsCountTenSeconds"][i]["anomalyField"] == '1') {
+                    timesPackets.push(data["packetsCountTenSeconds"][i]["time"]);
+
+                    cSynPackets.push({y:data["packetsCountTenSeconds"][i]["cSyn"], color: '#ff3232'});
+
+                    cPaPackets.push({y:data["packetsCountTenSeconds"][i]["cPa"], color: '#ff3232'});
+
+                    cRPackets.push({y:data["packetsCountTenSeconds"][i]["cR"], color: '#ff3232'});
+
+                    totalSizePackets.push({y:data["packetsCountTenSeconds"][i]["totalSize"], color: '#ff3232'});
+                }
+
+                else {
                 timesPackets.push(data["packetsCountTenSeconds"][i]["time"]);
+
                 cSynPackets.push(data["packetsCountTenSeconds"][i]["cSyn"]);
+
                 cPaPackets.push(data["packetsCountTenSeconds"][i]["cPa"]);
+
                 cRPackets.push(data["packetsCountTenSeconds"][i]["cR"]);
+
                 totalSizePackets.push(data["packetsCountTenSeconds"][i]["totalSize"]);
+                }
             }
 
             for (var i = 0; i < data["Flows"].length; i++) {
+
+                
+                if (data["Flows"][i]["anomalyField"] == '1') {
+                    timesFlows.push(data["Flows"][i]["time"]);
+                    service.push(data["Flows"][i]["service"]);
+                    dstPort.push({y:data["Flows"][i]["dstPort"], color: '#ff3232' });
+                    cSynFlows.push({y:data["Flows"][i]["cSyn"], color: '#ff3232' });
+                    cPaFlows.push({y:data["Flows"][i]["cPa"], color: '#ff3232' });
+                    cRFlows.push({y:data["Flows"][i]["cR"], color: '#ff3232' });
+                    totalSizeFlows.push({y:data["Flows"][i]["totalSize"], color: '#ff3232' });
+                }
+
+                else {
                 timesFlows.push(data["Flows"][i]["time"]);
                 service.push(data["Flows"][i]["service"]);
+                dstPort.push(data["Flows"][i]["dstPort"]);
                 cSynFlows.push(data["Flows"][i]["cSyn"]);
                 cPaFlows.push(data["Flows"][i]["cPa"]);
                 cRFlows.push(data["Flows"][i]["cR"]);
                 totalSizeFlows.push(data["Flows"][i]["totalSize"]);
+                }
+            
             }
 
+
+
             Highcharts.chart('container1', {
+
                 chart: {
+
                     type: 'line'
+
                 },
+
                 title: {
+
                     text: 'Packets Count Every Ten Seconds'
+
                 },
+
                 subtitle: {
+
                     text: 'SYN , Payload , Reset Counts'
+
                 },
+
                 xAxis: {
+
                     categories: timesPackets
+
                 },
+
                 yAxis: {
+
                     title: {
+
                         text: 'Count'
+
                     }
+
                 },
+
                 plotOptions: {
+
                     line: {
+
                         dataLabels: {
+
                             enabled: true
+
                         },
+
                         enableMouseTracking: false
+
                     }
+
                 },
+
                 series: [{
+
                     name: 'Payload Count',
-                    data: cPaPackets  
+
+                    data: cPaPackets
+
                 }, {
+
                     name: 'Reset Count',
+
                     data: cRPackets
+
                 }, {
-			        name: 'Syn Count',
+
+                    name: 'Syn Count',
+
                     data: cSynPackets
+
                 }]
+
             });
+
+
 
             Highcharts.chart('container2', {
+
                 chart: {
+
                     type: 'line'
+
                 },
+
                 title: {
+
                     text: 'Packets Count Every Ten Seconds'
+
                 },
+
                 subtitle: {
+
                     text: 'Packets Size'
+
                 },
+
                 xAxis: {
+
                     categories: timesPackets
+
                 },
+
                 yAxis: {
+
                     title: {
+
                         text: ''
+
                     }
+
                 },
+
                 plotOptions: {
+
                     line: {
+
                         dataLabels: {
+
                             enabled: true
+
                         },
+
                         enableMouseTracking: true
+
                     }
+
                 },
+
                 series: [{
+
                     name: 'Total Size',
+
                     data: totalSizePackets
+
                 }]
+
             });
 
-            
+
+
+
+
             Highcharts.chart('container3', {
+
                 chart: {
+
                     type: 'column'
+
                 },
+
                 title: {
+
                     text: 'Flows Count'
+
                 },
+
                 xAxis: {
+
                     categories: service
+
                 },
+
                 yAxis: {
+
                     min: 0,
+
                     title: {
+
                         text: 'Count'
+
                     },
+
                     stackLabels: {
+
                         enabled: true,
+
                         style: {
+
                             fontWeight: 'bold',
+
                             color: ( // theme
+
                                 Highcharts.defaultOptions.title.style &&
+
                                 Highcharts.defaultOptions.title.style.color
+
                             ) || 'gray'
+
                         }
+
                     }
+
                 },
+
                 legend: {
+
                     align: 'right',
+
                     x: -30,
+
                     verticalAlign: 'top',
+
                     y: 25,
+
                     floating: true,
+
                     backgroundColor:
+
                         Highcharts.defaultOptions.legend.backgroundColor || 'white',
+
                     borderColor: '#CCC',
+
                     borderWidth: 1,
+
                     shadow: false
+
+                },
+
+                tooltip: {
+
+                    headerFormat: '<b>{point.x}</b><br/>',
+
+                    pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+
+                },
+
+                plotOptions: {
+
+                    column: {
+
+                        stacking: 'normal',
+
+                        dataLabels: {
+
+                            enabled: true
+
+                        }
+
+                    }
+
+                },
+
+                series: [{
+
+                    name: 'Payload',
+
+                    data: cPaFlows
+
+                }, {
+
+                    name: 'Reset',
+
+                    data: cRFlows
+
+                }, {
+
+                    name: 'SYN',
+
+                    data: cSynFlows
+
+                }]
+
+            });
+
+
+
+
+
+            Highcharts.chart('container4', {
+
+                chart: {
+
+                    type: 'line'
+
+                },
+
+                title: {
+
+                    text: 'Flows Count'
+
+                },
+
+                subtitle: {
+
+                    text: ''
+
+                },
+
+                xAxis: {
+
+                    categories: service
+
+                },
+
+                yAxis: {
+
+                    title: {
+
+                        text: ''
+
+                    }
+
+                },
+
+                plotOptions: {
+
+                    line: {
+
+                        dataLabels: {
+
+                            enabled: true
+
+                        },
+
+                        enableMouseTracking: true
+
+                    }
+
                 },
                 tooltip: {
-                    headerFormat: '<b>{point.x}</b><br/>',
-                    pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+                    pointFormat: 'Flow size: <b>{point.y} bytes</b>'
                 },
-                plotOptions: {
-                    column: {
-                        stacking: 'normal',
-                        dataLabels: {
-                            enabled: true
-                        }
-                    }
-                },
+                
                 series: [{
-                    name: 'Payload',
-                    data: cPaFlows
-                }, {
-                    name: 'Reset',
-                    data: cRFlows
-                }, {
-                    name: 'SYN',
-                    data: cSynFlows
-                    }]
+
+                    name: 'Total Size',
+
+                    data: totalSizeFlows,
+                }]
+
             });
 
-            
-            Highcharts.chart('container4', {
-                chart: {
-                    type: 'line'
-                },
-                title: {
-                    text: 'Flows Count'
-                },
-                subtitle: {
-                    text: 'Flows Size'
-                },
-                xAxis: {
-                    categories: timesPackets
-                },
-                yAxis: {
-                    title: {
-                        text: ''
-                    }
-                },
-                plotOptions: {
-                    line: {
-                        dataLabels: {
-                            enabled: true
-                        },
-                        enableMouseTracking: true
-                    }
-                },
-                series: [{
-                    name: 'Total Size',
-                    data: totalSizeFlows
-                }]
-            });
         });
+
     });
+
 </script>
