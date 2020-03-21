@@ -5,6 +5,7 @@ import datetime
 from scapy.all import *
 from scapy.layers.inet import TCP, IP
 import time
+from multiprocessing import freeze_support
 
 src = "192.168.222.1"
 tgt = "192.168.222.2"
@@ -62,6 +63,12 @@ def portScan():
     os.system('port_scan.py')
     endTime=timePeriodCalc()
 
+def anomallySendFile():
+    startTime=timePeriodCalc()
+    os.system('anomallySendFile.py')
+    endTime=timePeriodCalc()
+
+freeze_support()
 canvas = tk.Canvas(root, height=500, width=700, bg="#263D42")
 canvas.pack()
 
@@ -74,8 +81,9 @@ syn_attack.pack()
 port_scan = tk.Button(root, text='Port Scan', padx=10, pady=5, fg='white', bg="#263D42", command=portScan)
 port_scan.pack()
 
-openFile = tk.Button(root, text='Open File', padx=10, pady=5, fg='white', bg="#263D42", command=Addapp)
-openFile.pack()
+anomallySendFile = tk.Button(root, text='Anomally Send File', padx=10, pady=5, fg='white', bg="#263D42", command=anomallySendFile)
+anomallySendFile.pack()
+
 openFile = tk.Button(root, text='Open File', padx=10, pady=5, fg='white', bg="#263D42", command=Addapp)
 openFile.pack()
 openFile = tk.Button(root, text='Open File', padx=10, pady=5, fg='white', bg="#263D42", command=Addapp)
