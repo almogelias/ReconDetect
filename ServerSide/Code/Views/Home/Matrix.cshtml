@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewBag.Title = "Matrix";
+}
+
+<script>
+    $(document).ready(function () {
+        //Call EmpDetails jsonResult Method
+        $.getJSON("/Home/JsonMatrix",
+            function (json) {
+                var tr;
+                var confusion = {
+                    "True Positive": json["TruePositive"], "False Positive": json["FalsePositive"]
+                    , "True Negative": json["TrueNegative"], "False Negative": json["FalseNegative"]
+                };
+                var finalStatistics = {
+                    Accuracy: json["Accuracy"], Precision: json["Precision"]
+                    , Sensitivity: json["Sensitivity"], Specificity: json["Specificity"],F1: json["F1"]
+                };
+                //Append each row to html table
+                for (var key in confusion) {
+                    tr = $('<tr/>');
+                    tr.append("<td><b><h4>" + key + "</h4></b></td>");
+                    tr.append("<td><h4>" + confusion[key] + "</h4></td>");
+                    $('#ConfusionTable').append(tr);
+                }
+
+                for (var key in finalStatistics) {
+                    tr = $('<tr/>');
+                    tr.append("<td><b><h4>"+key+"</h4></b></td>");
+                    tr.append("<td><h4>" + (finalStatistics[key]*100).toFixed(2) + "</h4></td>");
+                    $('#finalStatisticsTable').append(tr);
+                }
+            });
+    });
+</script>
+
+<h2>Confusion Matrix</h2>
+<table id="ConfusionTable" class="table table-bordered table-condensed table-hover table-striped">
+    <thead>
+        <tr>
+            <th><h3>Instance</h3></th>
+            <th><h3>Value</h3></th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<h2>Performance Measure</h2>
+<table id="finalStatisticsTable" class="table table-bordered table-condensed table-hover table-striped">
+    <thead>
+        <tr>
+            <th><h3>Metric Name</h3></th>
+            <th><h3>Percent</h3></th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+

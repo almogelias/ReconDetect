@@ -1,0 +1,61 @@
+﻿
+@{
+    ViewBag.Title = "Anomalies";
+}
+
+<script>
+    $(document).ready(function () {
+        //Call EmpDetails jsonResult Method
+        $.getJSON("/Home/JsonAnomalies",
+            function (json) {
+                var tr;
+                var anomalyPacketsTenSeconds = json["anomalyPacketsTenSeconds"];
+                var anomalyFlows = json["anomalyFlows"];
+                //Append each row to html table
+                for (var i = 0; i < anomalyPacketsTenSeconds.length; i++) {
+                    tr = $('<tr/>');
+                    tr.append("<td>" + anomalyPacketsTenSeconds[i].packetId + "</td>");
+                    tr.append("<td>" + anomalyPacketsTenSeconds[i].time + "</td>");
+                    tr.append("<td>" + anomalyPacketsTenSeconds[i].day + "</td>");
+                    tr.append("<td>" + anomalyPacketsTenSeconds[i].totalSize + "</td>");
+                    $('#packetsTable').append(tr);
+                }
+                for (var i = 0; i < anomalyFlows.length; i++) {
+                    tr = $('<tr/>');
+                    tr.append("<td>" + anomalyFlows[i].flowId + "</td>");
+                    tr.append("<td>" + anomalyFlows[i].time + "</td>");
+                    tr.append("<td>" + anomalyFlows[i].day + "</td>");
+                    tr.append("<td>" + anomalyFlows[i].service + "</td>");
+                    tr.append("<td>" + anomalyFlows[i].totalSize + "</td>");
+                    $('#flowsTable').append(tr);
+                }
+            });
+    });
+</script>
+
+<h2>Packets Per 10 Seconds</h2>
+<table id="packetsTable" class="table table-bordered table-condensed table-hover table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Time</th>
+            <th>Day</th>
+            <th>TotalSize</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<h2>Flows</h2>
+<table id="flowsTable" class="table table-bordered table-condensed table-hover table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Time</th>
+            <th>Day</th>
+            <th>Service</th>
+            <th>TotalSize</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
