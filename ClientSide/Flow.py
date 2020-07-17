@@ -5,50 +5,16 @@ class Flow:
 
     def __init__(self):
 
+        self.flowCount = 0
+
         self.flows = deque()
 
-    def addCounterToDictFlow(self, packet, dictFlowSummery):
-        if (packet['Flags'] == 'S'):
-            dictFlowSummery['counterOfSyn'] += 1
-        if (packet['Flags'] == 'A'):
-            dictFlowSummery['counterOfAck'] += 1
-        if (packet['Flags'] == 'PA'):
-            dictFlowSummery['counterOfPa'] += 1
-        if (packet['Flags'] == 'R'):
-            dictFlowSummery['counterOfR'] += 1
-        if (packet['Flags'] == 'RA'):
-            dictFlowSummery['counterOfRA'] += 1
-        if (packet['Flags'] == 'FA'):
-            dictFlowSummery['counterOfFin'] += 1
-        dictFlowSummery['counterOfPackets'] += 1
-        dictFlowSummery['UnixEndTimeMillisec'] = packet['UnixTimeMillisec']
-        dictFlowSummery['packetsTotalSize'] = packet['IPLen']
-        return dictFlowSummery
+    def addPacket(self, packet):
 
-    def addCounterInExistFlow(self, flow, packet, dictFlowSummery):
-        flow['counterOfPackets'] += 1
-        if (packet['Flags'] == 'S'):
-            flow['counterOfSyn'] += 1
-        if (packet['Flags'] == 'A'):
-            flow['counterOfAck'] += 1
-        if (packet['Flags'] == 'PA'):
-            flow['counterOfPa'] += 1
-        if (packet['Flags'] == 'R'):
-            flow['counterOfR'] += 1
-        if (packet['Flags'] == 'RA'):
-            flow['counterOfRA'] += 1
-        if (packet['Flags'] == 'FA'):
-            flow['counterOfFin'] += 1
-        flow['UnixEndTimeMillisec'] = packet['UnixTimeMillisec']
-        flow['packetsTotalSize'] += packet['IPLen']
-        return flow
-
-    def reset_dictFlowSummery(self,packet):
         dictFlowSummery = {'UnixStartTimeMillisec': packet['UnixTimeMillisec'],
                            'UnixEndTimeMillisec': 0,
                            'Time': packet['Time'],
                            'Day': packet['Day'],
-                           'TimePeriod' : packet['TimePeriod'],
                            'srcIpAddr': packet['srcIpAddr'],
                            'dstIpAddr': packet['dstIpAddr'],
                            'Service': packet['service'],
@@ -61,27 +27,85 @@ class Flow:
                            'counterOfR': 0,
                            'counterOfRA': 0,
                            'counterOfFin': 0,
-                           'packetsTotalSize': 0
+                           'packetsTotalSize': 0,
+                           ################################
+                           'PID':None
+                           ################################
                            }
-        return dictFlowSummery
 
-    def addPacket(self, packet):
+        try:
 
-        if ((packet['dstPort'] != 445 and packet['srcPort'] != 445) and
-                (packet['dstPort'] != 1433 and packet['srcPort'] != 1433)):
+            if ((packet['dstPort'] != 445 and packet['srcPort'] != 445) and (packet['dstPort'] != 1433 and packet['srcPort'] != 1433)):
 
-            dictFlowSummery=self.reset_dictFlowSummery(packet)
-            checkIfFlowExist=0
-            index=0
-            for flow in self.flows:
+                if self.flows:
 
-                if (((flow['dstPort'] == packet['dstPort'] and flow['srcPort'] == packet['srcPort'] and (flow['srcIpAddr'] == packet['srcIpAddr'])) or (
-                        flow['dstPort'] == packet['srcPort'] and flow['srcPort'] == packet['dstPort']) and (flow['srcIpAddr'] == packet['dstIpAddr']))):
-                    self.flows[index]=self.addCounterInExistFlow(flow, packet, dictFlowSummery)
-                    checkIfFlowExist=1
-                index += 1
+                    for flow in self.flows:
 
-            if (checkIfFlowExist==0):
-                dictFlowSummery=self.addCounterToDictFlow(packet,dictFlowSummery)
-                self.flows.appendleft(dictFlowSummery)
+                        if (((flow['dstPort'] == packet['dstPort'] and flow['srcPort'] == packet['srcPort'] and (flow['srcIpAddr'] == packet['srcIpAddr']) and (flow['dstIpAddr'] == packet['dstIpAddr'])) or
+                             (flow['dstPort'] == packet['srcPort'] and flow['srcPort'] == packet['dstPort'] and (flow['srcIpAddr'] == packet['dstIpAddr']) and (flow['dstIpAddr'] == packet['dstIsrcIpAddrpAddr'])))
+                                 and flow['counterOfFin'] == 0):
+                            flow['counterOfPackets'] += 1
+                            flow['packetsTotalSize'] += packet['IPLen']
+                            flow['UnixEndTimeMillisec'] = packet['UnixTimeMillisec']
+                            if(packet['Flags']=='S'):
+                                flow['counterOfSyn'] += 1
+                            elif (packet['Flags'] == 'A'):
+                                flow['counterOfAck'] += 1
+                            elif (packet['Flags'] == 'PA'):
+                                flow['counterOfPa'] += 1
+                            elif (packet['Flags'] == 'R'):
+                                flow['counterOfR'] += 1
+                            elif (packet['Flags'] == 'RA'):
+                                flow['counterOfRA'] += 1
+                            elif (packet['Flags'] == 'FA'):
+                                flow['counterOfFin'] += 1
 
+                        else:
+                            dictFlowSummery['counterOfPackets'] += 1
+                            dictFlowSummery['packetsTotalSize'] += packet['IPLen']
+                            dictFlowSummery['UnixEndTimeMillisec'] = packet['UnixTimeMillisec']
+                            if (packet['Flags'] == 'S'):
+                                dictFlowSummery['counterOfSyn'] += 1
+                            elif (packet['Flags'] == 'A'):
+                                dictFlowSummery['counterOfAck'] += 1
+                            elif (packet['Flags'] == 'PA'):
+                                dictFlowSummery['counterOfPa'] += 1
+                            elif (packet['Flags'] == 'R'):
+                                dictFlowSummery['counterOfR'] += 1
+                            elif (packet['Flags'] == 'RA'):
+                                dictFlowSummery['counterOfRA'] += 1
+                            elif (packet['Flags'] == 'FA'):
+                                dictFlowSummery['counterOfFin'] += 1
+                            self.flows.appendleft(dictFlowSummery)
+                else:
+                    dictFlowSummery['counterOfPackets'] += 1
+                    dictFlowSummery['packetsTotalSize'] += packet['IPLen']
+                    dictFlowSummery['UnixEndTimeMillisec'] = packet['UnixTimeMillisec']
+                    if (packet['Flags'] == 'S'):
+                        dictFlowSummery['counterOfSyn'] += 1
+                    elif (packet['Flags'] == 'A'):
+                        dictFlowSummery['counterOfAck'] += 1
+                    elif (packet['Flags'] == 'PA'):
+                        dictFlowSummery['counterOfPa'] += 1
+                    elif (packet['Flags'] == 'R'):
+                        dictFlowSummery['counterOfR'] += 1
+                    elif (packet['Flags'] == 'RA'):
+                        dictFlowSummery['counterOfRA'] += 1
+                    elif (packet['Flags'] == 'FA'):
+                        dictFlowSummery['counterOfFin'] += 1
+                    ##############################
+                    if(packet['PID']):
+                        dictFlowSummery['PID']=packet['PID']
+                    ##############################
+                    self.flows.appendleft(dictFlowSummery)
+
+
+
+        except:
+
+            pass
+
+    def returnFlows(self):
+
+        for flow in self.flows:
+            print(flow)
