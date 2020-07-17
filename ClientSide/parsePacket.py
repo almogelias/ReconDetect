@@ -36,6 +36,7 @@ class Parser():
         local_time = datetime.fromtimestamp(self.pkt.time, local_timezone)
         dataDict["UnixTimeMillisec"] = int(self.pkt.time*1000)
         dataDict["Time"] = local_time.strftime('%H%M%S%f')
+
         dataDict["TimePeriod"] = self.timePeriodCalc(int(local_time.strftime('%H%M%S')))
         dataDict["Date"] = date_int
         dataDict["Day"] = local_time.strftime("%A")
@@ -189,12 +190,23 @@ class Parser():
             else:
                 return('System Idle Process.exe','None')
         except:
-            return ('None','None')
+            try:
+                #Find the parent PID
+                file = psutil.Process(PID).ppid()
+                filename = file.name()
+                filepath = file.exe()
+                return (filename, filepath)
+            except:
+                return ('None','None')
 
     def getFileDeltaTime(self,filePath):
         if(filePath!='None'):
-            creationTime = os.path.getctime(filePath)
-            deltaTime=self.pkt.time-creationTime
+            try:
+                creationTime = os.path.getctime(filePath)
+                deltaTime = self.pkt.time - creationTime
+            except:
+                creationTime = 'None'
+                deltaTime = 'None'
             return deltaTime
         return 'None'
 
