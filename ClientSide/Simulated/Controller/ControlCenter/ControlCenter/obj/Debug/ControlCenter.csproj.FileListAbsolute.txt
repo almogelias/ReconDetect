@@ -1,0 +1,13 @@
+C:\Users\Anon\source\repos\ControlCenter\ControlCenter\bin\Debug\ControlCenter.exe.config
+C:\Users\Anon\source\repos\ControlCenter\ControlCenter\bin\Debug\ControlCenter.exe
+C:\Users\Anon\source\repos\ControlCenter\ControlCenter\bin\Debug\ControlCenter.pdb
+C:\Users\Anon\source\repos\ControlCenter\ControlCenter\obj\Debug\ControlCenter.AttackSimulatorUserControl.resources
+C:\Users\Anon\source\repos\ControlCenter\ControlCenter\obj\Debug\ControlCenter.ConsoleCenter.resources
+C:\Users\Anon\source\repos\ControlCenter\ControlCenter\obj\Debug\ControlCenter.Properties.Resources.resources
+C:\Users\Anon\source\repos\ControlCenter\ControlCenter\obj\Debug\ControlCenter.Settings.resources
+C:\Users\Anon\source\repos\ControlCenter\ControlCenter\obj\Debug\ControlCenter.csproj.GenerateResource.cache
+C:\Users\Anon\source\repos\ControlCenter\ControlCenter\obj\Debug\ControlCenter.csproj.CoreCompileInputs.cache
+C:\Users\Anon\source\repos\ControlCenter\ControlCenter\obj\Debug\ControlCenter.exe
+C:\Users\Anon\source\repos\ControlCenter\ControlCenter\obj\Debug\ControlCenter.pdb
+C:\Users\Anon\source\repos\ControlCenter\ControlCenter\obj\Debug\ControlCenter.AboutDescription.resources
+C:\Users\Anon\source\repos\ControlCenter\ControlCenter\obj\Debug\ControlCenter.csprojAssemblyReference.cache
