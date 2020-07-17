@@ -8,8 +8,9 @@ The lab contains 1 server and 2 clients.
 
 1. Install Visual Studio c#
 2. Install Python 3.8 + PyCharm
-3. Install virtual machine with Visual Studio and Python 3.8
-4. Implement the WebServer code in the Server machine.
-5. Implement the ClientSide code in one of the clients.
+3. Install Microsoft SQL Server 2014
+4. Install virtual machine with Visual Studio and Python 3.8
+5. Implement the WebServer code in the Server machine.
+6. Implement the ClientSide code in one of the clients.
 
 Enjoy.
