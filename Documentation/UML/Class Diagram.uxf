@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>9</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>468</x>
+      <y>81</y>
+      <w>162</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>PARSING_RAWDATA
+--
+packet: packet
+dataDict: parseData</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>756</x>
+      <y>207</y>
+      <w>126</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>PACKET_COUNTING
+--
+TenSeconds : int
+PacketTable: deque</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>225</x>
+      <y>81</y>
+      <w>144</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>PACKET_SNIFFER
+--
+raw: packet</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>756</x>
+      <y>504</y>
+      <w>126</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>FLOW
+--
+flowCount: int
+flows: deque</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>756</x>
+      <y>360</y>
+      <w>126</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>DB_WRITE
+--
+conn: sqlConnection</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>639</x>
+      <y>234</y>
+      <w>144</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=0..*</panel_attributes>
+    <additional_attributes>10.0;140.0;130.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>207</x>
+      <y>360</y>
+      <w>189</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>ADAPTER_INFO
+--
+adapterName: string
+ip: string
+subnetMask: string</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>360</x>
+      <y>108</y>
+      <w>126</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>10.0;10.0;120.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>288</x>
+      <y>144</y>
+      <w>45</w>
+      <h>234</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=0..*</panel_attributes>
+    <additional_attributes>10.0;240.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>810</x>
+      <y>270</y>
+      <w>45</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=0..*</panel_attributes>
+    <additional_attributes>10.0;100.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>468</x>
+      <y>360</y>
+      <w>216</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>TRAFFIC_CAPTURE
+--
+Flows: Flow
+packetCount: PACKET_COUNTING
+conn: Database</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>387</x>
+      <y>387</y>
+      <w>99</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>10.0;10.0;90.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>549</x>
+      <y>144</y>
+      <w>45</w>
+      <h>234</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=0..*</panel_attributes>
+    <additional_attributes>10.0;240.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>639</x>
+      <y>423</y>
+      <w>144</w>
+      <h>135</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=0..*</panel_attributes>
+    <additional_attributes>10.0;10.0;130.0;130.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>675</x>
+      <y>387</y>
+      <w>99</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=0..*
+m2=1</panel_attributes>
+    <additional_attributes>10.0;10.0;90.0;10.0</additional_attributes>
+  </element>
+</diagram>
